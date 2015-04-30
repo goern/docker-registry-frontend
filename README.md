@@ -51,7 +51,7 @@ If you want to run the application with SSL enabled, you can do the following:
       -v $PWD/server.key:/etc/httpd/server.key:ro \
       -p 443:443 \
       b4mad/docker-registry-frontend
-
+    
 Note that the application still serves the port `80` but it is simply not exposed ;). Enable it at your own will. When the application runs with SSL you can open your browser and navigate to [https://localhost][2].
 
 ## Use the application as the registry
