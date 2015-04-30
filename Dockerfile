@@ -20,7 +20,7 @@ RUN mkdir -pv $WWW_DIR
 ############################################################
 
 RUN yum install -y --setopt=tsflags=nodocs epel-release && \
-    yum install -y --setopt=tsflags=nodocs httpd git nodejs npm make && \
+    yum install -y --setopt=tsflags=nodocs httpd git nodejs npm make libpng-devel && \
 # nodejs-legacy
     yum update -y && \
     yum clean all 
