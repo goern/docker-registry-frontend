@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM centos:7 
 MAINTAINER "Konrad Kleine"
 
 
@@ -15,31 +15,15 @@ ENV START_SCRIPT /root/start-apache.sh
 RUN mkdir -pv $WWW_DIR
 
 ############################################################
-# Speedup DPKG and don't use cache for packages
-############################################################
-
-# Taken from here: https://gist.github.com/kwk/55bb5b6a4b7457bef38d
-#
-# this forces dpkg not to call sync() after package extraction and speeds up
-# install
-RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
-# # we don't need and apt cache in a container
-RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
-
-############################################################
 # Install and configure webserver software
 ############################################################
 
-RUN apt-get -y update && \
-    export DEBIAN_FRONTEND=noninteractive && \
-    apt-get -y install \
-      apache2 \
-      libapache2-mod-auth-kerb \
-      libapache2-mod-proxy-html \
-      --no-install-recommends
-
-RUN a2enmod proxy
-RUN a2enmod proxy_http
+RUN yum install -y --setopt=tsflags=nodocs epel-release && \
+    yum install -y --setopt=tsflags=nodocs httpd git nodejs npm && \
+# nodejs-legacy
+    yum update -y && \
+    yum clean all 
+#      libapache2-mod-auth-kerb
 
 ############################################################
 # This adds everything we need to the build root except those
@@ -50,9 +34,7 @@ RUN a2enmod proxy_http
 ############################################################
 
 # Create dirs
-RUN mkdir -p $SOURCE_DIR/dist
-RUN mkdir -p $SOURCE_DIR/app
-RUN mkdir -p $SOURCE_DIR/test
+RUN mkdir -p $SOURCE_DIR/dist $SOURCE_DIR/app $SOURCE_DIR/test $SOURCE_DIR/.git
 
 # Add dirs
 ADD app $SOURCE_DIR/app
@@ -72,7 +54,6 @@ ADD package.json $SOURCE_DIR/
 ADD README.md $SOURCE_DIR/
 
 # Add Git version information to it's own json file app-version.json
-RUN mkdir -p $SOURCE_DIR/.git
 ADD .git/HEAD $SOURCE_DIR/.git/HEAD
 ADD .git/refs $SOURCE_DIR/.git/refs
 RUN cd $SOURCE_DIR && \
@@ -92,37 +73,29 @@ RUN cd $SOURCE_DIR && \
 # installed app artifacts.
 ############################################################
 
-RUN apt-get -y install \
-      git \
-      nodejs \
-      nodejs-legacy \
-      npm \
-      --no-install-recommends && \
-    git config --global url."https://".insteadOf git:// && \
+RUN git config --global url."https://".insteadOf git:// && \
     cd $SOURCE_DIR && \
     npm install && \
     node_modules/bower/bin/bower install --allow-root && \
     node_modules/grunt-cli/bin/grunt build --allow-root && \
     cp -rf $SOURCE_DIR/dist/* $WWW_DIR && \
     rm -rf $SOURCE_DIR && \
-    apt-get -y --auto-remove purge git nodejs nodejs-legacy npm && \
-    apt-get -y clean && \
+#    apt-get -y --auto-remove purge git nodejs nodejs-legacy npm && \
+#    apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 ############################################################
 # Add and enable the apache site and disable all other sites
 ############################################################
 
-RUN a2dissite 000*
-ADD apache-site.conf /etc/apache2/sites-available/docker-site.conf
-RUN a2ensite docker-site.conf
+ADD apache-site.conf /etc/httpd/conf.d/docker-registry-frontend.conf
 
 ADD start-apache.sh $START_SCRIPT
 RUN chmod +x $START_SCRIPT
 
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_RUN_USER apache
+ENV APACHE_RUN_GROUP apache 
+ENV APACHE_LOG_DIR /var/log/httpd
 
 # Let people know how this was built
 ADD Dockerfile /root/Dockerfile
@@ -130,6 +103,6 @@ ADD Dockerfile /root/Dockerfile
 # Exposed ports
 EXPOSE 80 443
 
-VOLUME ["/etc/apache2/server.crt", "/etc/apache2/server.key"]
+VOLUME ["/etc/httpd/server.crt", "/etc/httpd/server.key"]
 
 CMD $START_SCRIPT
