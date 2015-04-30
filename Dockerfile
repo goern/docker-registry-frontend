@@ -1,6 +1,7 @@
 FROM centos:7 
-MAINTAINER "Konrad Kleine"
+MAINTAINER Christoph Görn <goern@b4mad.net>
 
+LABEL License=MIT
 
 USER root
 
@@ -19,7 +20,7 @@ RUN mkdir -pv $WWW_DIR
 ############################################################
 
 RUN yum install -y --setopt=tsflags=nodocs epel-release && \
-    yum install -y --setopt=tsflags=nodocs httpd git nodejs npm && \
+    yum install -y --setopt=tsflags=nodocs httpd git nodejs npm make && \
 # nodejs-legacy
     yum update -y && \
     yum clean all 
