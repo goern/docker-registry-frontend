@@ -76,6 +76,9 @@ fi
 #  a2dismod ssl
 #fi
 
+# Enable mod_rewrite
+a2enmod rewrite
+
 # Stop apache first if is still running from the last time the container was run
 kill `cat /run/httpd/httpd.pid`
 . /etc/sysconfig/httpd
