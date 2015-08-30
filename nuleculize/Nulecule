@@ -38,7 +38,10 @@
       ],
       "artifacts": {
         "openshift": [
-          "file://artifacts/openshift/docker-registry-frontend-template.json"
+          "file://artifacts/atomicenterpriseplatform/docker-registry-frontend-template.json"
+        ],
+        "atomicenterpriseplatform": [
+          "file://artifacts/atomicenterpriseplatform/docker-registry-frontend-template.json"
         ]
       }
     }

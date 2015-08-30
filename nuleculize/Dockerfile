@@ -2,7 +2,7 @@ FROM projectatomic/atomicapp:dev
 
 MAINTAINER Christoph Görn <goern@b4mad.net>
 
-LABEL io.projectatomic.nulecule.providers="openshift" \
+LABEL io.projectatomic.nulecule.providers="openshift,atomicenterpriseplatform" \
       io.projectatomic.nulecule.specversion="0.0.2"
 
 ADD /Nulecule /Dockerfile README.md /application-entity/
