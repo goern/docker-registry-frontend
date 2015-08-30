@@ -39,7 +39,7 @@
       "kind": "Route",
       "apiVersion": "v1",
       "metadata": {
-        "name": "jenkins",
+        "name": "docker-registry-frontend",
         "creationTimestamp": null
       },
       "spec": {
