@@ -1,0 +1,46 @@
+{
+  "specversion": "0.0.2",
+  "id": "docker-registry-frontend-atomicapp",
+  "metadata": {
+    "name": "Docker Registry Frontend",
+    "appversion": "0.1.0",
+    "description": "Browse and modify your Docker registry (currently v1 only) in a browser."
+  },
+  "graph": [
+    {
+      "name": "docker-registry-frontend",
+      "params": [
+        {
+          "name": "ENV_DOCKER_REGISTRY_HOST",
+          "description": "The docker registry host.",
+          "default": "docker-registry.default.svc.cluster.local"
+        },
+        {
+          "name": "ENV_DOCKER_REGISTRY_PORT",
+          "description": "The docker registry's port",
+          "defualt": "5000"
+        },
+        {
+          "name": "ENV_DOCKER_REGISTRY_USE_SSL",
+          "description": "Is the docker registry exposing its service via SSL?",
+          "default": "1"
+        },
+        {
+          "name": "ENV_MODE_BROWSE_ONLY",
+          "description": "'browse mode' which means no repos/tags management feature in the web console.",
+          "default": "true"
+        },
+        {
+          "name": "PUBLIC_SERVICE_DOMAINNAME",
+          "description": "the domainname that shall be used for the route configuration item.",
+          "default": "docker-registry-frontend.example.com"
+        }
+      ],
+      "artifacts": {
+        "openshift": [
+          "file://artifacts/openshift/docker-registry-frontend-template.json"
+        ]
+      }
+    }
+  ]
+}
