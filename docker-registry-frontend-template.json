@@ -88,6 +88,30 @@
               {
                 "name": "docker-registry-frontend",
                 "image": "b4mad/docker-registry-frontend",
+                "ports": [
+                  {
+                    "containerPort": 80,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "ENV_DOCKER_REGISTRY_HOST",
+                    "value": "${ENV_DOCKER_REGISTRY_HOST}"
+                  },
+                  {
+                    "name": "ENV_DOCKER_REGISTRY_PORT",
+                    "value": "${ENV_DOCKER_REGISTRY_PORT}"
+                  },
+                  {
+                    "name": "ENV_DOCKER_REGISTRY_USE_SSL",
+                    "value": "${ENV_DOCKER_REGISTRY_USE_SSL}"
+                  },
+                  {
+                    "name": "ENV_MODE_BROWSE_ONLY",
+                    "value": "${ENV_MODE_BROWSE_ONLY}"
+                  }
+                ],
                 "resources": {},
                 "terminationMessagePath": "/dev/termination-log",
                 "imagePullPolicy": "IfNotPresent",
